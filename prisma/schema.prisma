@@ -1,0 +1,288 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+enum EntryType {
+  REVE
+  VISION
+  REVELATION
+}
+enum EntryStatus {
+  A_PRIER
+  EN_ATTENTE
+  CONFIRME
+  ACCOMPLI
+  CLASSE
+}
+enum PromiseStatus {
+  RECUE
+  EN_ATTENTE
+  EN_COURS
+  ACCOMPLIE
+}
+enum ProjectStatus {
+  IDEE
+  PLANIFIE
+  EN_COURS
+  EN_PAUSE
+  TERMINE
+  ABANDONNE
+}
+enum Period {
+  SEMAINE
+  MOIS
+  ANNEE
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  passwordHash String?
+  name String?
+  timezone String @default("Africa/Casablanca")
+  bibleVersion String @default("LSG")
+  locale String @default("fr")
+  theme String @default("dark")
+  createdAt DateTime @default(now())
+  entries JournalEntry[]
+  promises Promise[]
+  projects Project[]
+  meetings Meeting[]
+  goals Goal[]
+  milestones Milestone[]
+  plans DailyPlan[]
+  visions YearVision[]
+  words DailyWord[]
+  tags Tag[]
+  pushes PushSubscription[]
+  fasts Fast[]
+  embeddings Embedding[]
+  aiLogs AiLog[]
+}
+
+model JournalEntry {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type EntryType @default(REVE)
+  title String
+  body String
+  occurredAt DateTime @default(now())
+  place String?
+  emotions String[]
+  interpretation String?
+  aiInterpretation String?
+  verses String[]
+  status EntryStatus @default(A_PRIER)
+  fulfilledAt DateTime?
+  testimony String?
+  neverSendToAi Boolean @default(false)
+  tags Tag[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId, occurredAt])
+}
+
+model Promise {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text String
+  receivedAt DateTime @default(now())
+  verse String?
+  context String?
+  status PromiseStatus @default(RECUE)
+  fulfilledAt DateTime?
+  testimony String?
+  projects Project[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name String
+  description String?
+  category String @default("personnel")
+  startDate DateTime
+  plannedEnd DateTime?
+  actualEnd DateTime?
+  status ProjectStatus @default(IDEE)
+  priority Int @default(2)
+  progress Int @default(0)
+  notes String?
+  promiseId String?
+  promise Promise? @relation(fields: [promiseId], references: [id])
+  tasks Task[]
+  tags Tag[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id String @id @default(cuid())
+  title String
+  dueDate DateTime?
+  done Boolean @default(false)
+  projectId String?
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  goalId String?
+  goal Goal? @relation(fields: [goalId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Milestone {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind String
+  title String
+  institution String?
+  startDate DateTime
+  endDate DateTime?
+  description String?
+}
+
+model Meeting {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title String
+  kind String @default("culte")
+  place String?
+  startsAt DateTime
+  endsAt DateTime?
+  recurrence String?
+  notes String?
+  reminders Reminder[]
+}
+
+model Reminder {
+  id String @id @default(cuid())
+  meetingId String
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  minutesBefore Int
+  channel String @default("push")
+  sentAt DateTime?
+}
+
+model DailyPlan {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date DateTime
+  slots Json?
+  eveningReview String?
+  gratitude String?
+  @@unique([userId, date])
+}
+
+model Goal {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  period Period
+  domain String
+  title String
+  target Float?
+  progress Float @default(0)
+  status String @default("en_cours")
+  review String?
+  parentId String?
+  parent Goal? @relation("GoalTree", fields: [parentId], references: [id])
+  children Goal[] @relation("GoalTree")
+  tasks Task[]
+  visionId String?
+  vision YearVision? @relation(fields: [visionId], references: [id])
+}
+
+model YearVision {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  year Int
+  theme String
+  vision String
+  passage String
+  keywords String[]
+  goals Goal[]
+  @@unique([userId, year])
+}
+
+model DailyWord {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date DateTime
+  reference String
+  verseText String
+  thought String
+  favorite Boolean @default(false)
+  @@unique([userId, date])
+}
+
+model Tag {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name String
+  entries JournalEntry[]
+  projects Project[]
+  @@unique([userId, name])
+}
+
+model PushSubscription {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint String @unique
+  keys Json
+  device String?
+}
+
+model AiLog {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fn String
+  tokens Int
+  costEstimate Float
+  createdAt DateTime @default(now())
+}
+
+model Verse {
+  id String @id @default(cuid())
+  ref String
+  version String @default("LSG")
+  text String
+  @@unique([ref, version])
+}
+
+model Fast {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind String
+  intention String?
+  startDate DateTime
+  endDate DateTime
+  notes String?
+}
+
+model Embedding {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entity String
+  entityId String @unique
+  embedding Unsupported("vector(1536)")
+  @@index([userId])
+}
