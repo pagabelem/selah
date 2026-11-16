@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import "@fontsource/cormorant-garamond/400.css";
+import "@fontsource/cormorant-garamond/400-italic.css";
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/cormorant-garamond/700.css";
+import "@fontsource-variable/inter";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Stars from "@/components/Stars";
 import PinLock from "@/components/PinLock";
 import OfflineSync from "@/components/OfflineSync";
-const serif = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-serif" });
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
+
 export const metadata: Metadata = { manifest: "/manifest.webmanifest", title: "Selah", description: "Mon journal de vie, de foi et de vision" };
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${serif.variable} ${sans.variable}`}>
+    <html lang="fr">
       <body>
         <Stars /><PinLock /><OfflineSync />
         <Nav />

@@ -1,5 +1,5 @@
 @tailwind base; @tailwind components; @tailwind utilities;
-:root { --bg: #0F0D2E; --fg: #F7F3E8; --gold: #C9A227; }
+:root { --bg: #0F0D2E; --fg: #F7F3E8; --gold: #C9A227; --font-serif: "Cormorant Garamond", Georgia, serif; --font-sans: "Inter Variable", system-ui, sans-serif; }
 html.light { --bg: #FBF8F1; --fg: #1E1B4B; --gold: #B8892B; }
 body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); min-height: 100vh; }
 body::before { /* aurora */
