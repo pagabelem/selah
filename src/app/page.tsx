@@ -12,7 +12,7 @@ export default async function Dashboard() {
   return (
     <div className="grid gap-5 md:grid-cols-6">
       <section className="glass p-8 md:col-span-6">
-        <div className="flex items-center justify-between"><p className="text-xs uppercase tracking-[.3em] opacity-60">Bonjour {u.name}</p>{u.role === "ADMIN" && <Link href="/admin" className="rounded-full border border-gold/50 px-4 py-1 text-xs text-gold">Espace admin</Link>}</div>
+<div className="flex items-center justify-between"><p className="text-xs uppercase tracking-[.3em] opacity-60">Bonjour {u.name}</p><div className="flex gap-2"><Link href="/profil" className="rounded-full border border-gold/50 px-4 py-1 text-xs text-gold">Mon profil</Link>{u.role === "ADMIN" && <Link href="/admin" className="rounded-full border border-gold/50 px-4 py-1 text-xs text-gold">Espace admin</Link>}</div></div>
         <h2 className="verse-glow mt-3 font-serif text-4xl leading-tight md:text-6xl gold-text">{vision?.passage ?? "Ésaïe 43:19"}</h2>
         <p className="mt-3 font-serif text-xl italic opacity-80">{vision ? `« ${vision.theme} » — ${vision.vision}` : "Définissez votre vision de l'année."}</p>
       </section>
