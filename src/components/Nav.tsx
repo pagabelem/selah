@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import { logout } from "@/app/login/actions";
-import { Home, BookOpen, Sparkles, Plus, FolderKanban, CalendarDays, Target, Star, Bot, Clock, Compass, Search, Download, LogOut, Settings, Flame, Orbit, BookMarked, CalendarRange } from "lucide-react";
+import { Home, BookOpen, Sparkles, Plus, FolderKanban, CalendarDays, Target, Star, Bot, Clock, Compass, Search, Download, LogOut, Settings, Flame, Orbit, BookMarked, CalendarRange, User as UserIcon } from "lucide-react";
 const items = [
   { href: "/", label: "Accueil", Icon: Home, m: 1 }, { href: "/journal", label: "Journal", Icon: BookOpen, m: 1 },
   { href: "/agenda", label: "Agenda", Icon: CalendarDays, m: 1 }, { href: "/objectifs", label: "Objectifs", Icon: Target, m: 1 },
@@ -11,7 +11,7 @@ const items = [
   { href: "/projets", label: "Projets", Icon: FolderKanban, m: 0 }, { href: "/vision", label: "Vision", Icon: Star, m: 0 },
   { href: "/planning", label: "Planning", Icon: Clock, m: 0 }, { href: "/parcours", label: "Parcours", Icon: Compass, m: 0 }, { href: "/recherche", label: "Recherche", Icon: Search, m: 0 },
   { href: "/agenda/calendrier", label: "Calendrier", Icon: CalendarRange, m: 0 }, { href: "/constellation", label: "Constellation", Icon: Orbit, m: 0 }, { href: "/jeune", label: "Jeûne", Icon: Flame, m: 0 },
-  { href: "/retrospective", label: "Rétrospective", Icon: BookMarked, m: 0 }, { href: "/reglages", label: "Réglages", Icon: Settings, m: 0 },
+  { href: "/retrospective", label: "Rétrospective", Icon: BookMarked, m: 0 }, { href: "/reglages", label: "Réglages", Icon: Settings, m: 0 }, { href: "/profil", label: "Profil", Icon: UserIcon, m: 0 },
 ];
 export default function Nav() {
   const p = usePathname();

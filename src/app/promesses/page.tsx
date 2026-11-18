@@ -1,5 +1,7 @@
+import DeleteButton from "@/components/DeleteButton";
 import { db, currentUser } from "@/lib/db";
 import { createPromise, fulfillPromise } from "../actions";
+import { updatePromise } from "../actions3";
 export const dynamic = "force-dynamic";
 export default async function Promesses() {
   const u = await currentUser();
@@ -16,6 +18,12 @@ export default async function Promesses() {
           <p className="verse-glow font-serif text-2xl italic">« {p.text} »</p>
           {p.verse && <p className="mt-2 text-gold">{p.verse}</p>}
           {p.testimony && <p className="mt-3 text-sm opacity-70">{p.testimony}</p>}
+          <details className="mt-3"><summary className="cursor-pointer text-sm text-gold">Modifier</summary>
+            <form action={updatePromise} className="mt-3 space-y-2"><input type="hidden" name="id" value={p.id} />
+              <input name="text" defaultValue={p.text} className="input" /><input name="verse" defaultValue={p.verse ?? ""} className="input" />
+              <select name="status" defaultValue={p.status} className="input">{["RECUE", "EN_ATTENTE", "EN_COURS", "ACCOMPLIE"].map((x) => <option key={x}>{x}</option>)}</select>
+              <input name="testimony" defaultValue={p.testimony ?? ""} placeholder="Témoignage" className="input" /><button className="btn">Enregistrer</button></form></details>
+          <DeleteButton entity="promise" id={p.id} />
           {p.status !== "ACCOMPLIE" ? (
             <form action={fulfillPromise} className="mt-4 flex gap-2"><input type="hidden" name="id" value={p.id} /><input name="testimony" placeholder="Témoignage d'accomplissement" className="input" /><button className="btn !px-4 text-sm">Accomplie</button></form>
           ) : <p className="mt-3 text-xs uppercase tracking-widest opacity-50">Accomplie</p>}

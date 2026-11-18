@@ -1,5 +1,6 @@
 import { db, currentUser } from "@/lib/db";
 import { createMilestone } from "../actions2";
+import DeleteButton from "@/components/DeleteButton";
 export const dynamic = "force-dynamic";
 export default async function Parcours() {
   const u = await currentUser();
@@ -15,7 +16,7 @@ export default async function Parcours() {
       </form>
       <ol className="relative space-y-6 border-l border-gold/40 pl-8">{ms.map((m) => (
         <li key={m.id} className="relative"><span className={`absolute -left-[41px] top-2 h-4 w-4 rounded-full ${m.kind === "ecclesial" ? "bg-gold" : "bg-sage"} shadow-[0_0_12px_currentColor]`} />
-          <div className="glass p-5"><p className="text-xs uppercase tracking-widest opacity-60">{m.startDate.getFullYear()} · {m.kind}</p><h3 className="font-serif text-2xl">{m.title}</h3><p className="opacity-70">{m.institution}</p><p className="text-sm opacity-60">{m.description}</p></div></li>
+          <div className="glass p-5"><p className="text-xs uppercase tracking-widest opacity-60">{m.startDate.getFullYear()} · {m.kind}</p><h3 className="font-serif text-2xl">{m.title}</h3>  <DeleteButton entity="milestone" id={m.id} />  <p className="opacity-70">{m.institution}</p><p className="text-sm opacity-60">{m.description}</p></div></li>
       ))}</ol>
     </div>
   );

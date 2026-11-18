@@ -12,6 +12,8 @@ export default async function Journal() {
       <h2 className="font-serif text-5xl gold-text">Journal</h2>
       <form id="nouveau" action={createEntry} className="glass space-y-3 p-6">
         <select name="type" className="input"><option value="REVE">Rêve</option><option value="VISION">Vision</option><option value="REVELATION">Révélation</option></select>
+        <label className="block text-sm opacity-70">Date du rêve (modifiable pour un ancien rêve)</label>
+        <input name="date" type="datetime-local" className="input" />
         <input name="title" placeholder="Titre" className="input" />
         <textarea name="body" required rows={5} placeholder="Racontez ce que vous avez reçu…" className="input" />
         <div className="flex gap-3"><VoiceButton target="body" /><button className="btn">Enregistrer</button></div>

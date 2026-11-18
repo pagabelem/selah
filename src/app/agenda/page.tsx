@@ -1,6 +1,7 @@
 import { db, currentUser } from "@/lib/db";
 import { createMeeting } from "../actions";
 import PushButton from "@/components/PushButton";
+import DeleteButton from "@/components/DeleteButton";
 export const dynamic = "force-dynamic";
 export default async function Agenda() {
   const u = await currentUser();
@@ -17,7 +18,7 @@ export default async function Agenda() {
       {list.map((m, i) => (
         <article key={m.id} className={`glass p-6 ${i === 0 ? "ring-1 ring-gold/60" : ""}`}>
           <p className="text-xs uppercase tracking-widest text-gold">{m.kind}</p>
-          <h3 className="font-serif text-2xl">{m.title}</h3>
+          <h3 className="font-serif text-2xl">{m.title}</h3><DeleteButton entity="meeting" id={m.id} />
           <p className="opacity-70">{m.startsAt.toLocaleString("fr-FR", { dateStyle: "full", timeStyle: "short" })} {m.place && `· ${m.place}`}</p>
         </article>
       ))}

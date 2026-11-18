@@ -45,6 +45,9 @@ model User {
   id String @id @default(cuid())
   email String @unique
   passwordHash String?
+  role Role @default(USER)
+  status AccountStatus @default(ACTIVE)
+  lastLoginAt DateTime?
   name String?
   timezone String @default("Africa/Casablanca")
   bibleVersion String @default("LSG")
@@ -286,4 +289,18 @@ model Embedding {
   entityId String @unique
   embedding Unsupported("vector(1536)")
   @@index([userId])
+}
+
+
+
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  BLOCKED
 }

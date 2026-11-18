@@ -1,3 +1,4 @@
+import DeleteButton from "@/components/DeleteButton";
 import { db, currentUser } from "@/lib/db";
 import { createGoal, progressGoal } from "../actions";
 export const dynamic = "force-dynamic";
@@ -18,7 +19,7 @@ export default async function Objectifs() {
         return (
           <article key={g.id} className="glass p-6">
             <p className="text-xs uppercase tracking-widest text-gold">{g.period} · {g.domain}</p>
-            <h3 className="font-serif text-2xl">{g.title}</h3>
+            <h3 className="font-serif text-2xl">{g.title}</h3><DeleteButton entity="goal" id={g.id} />
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-sage to-gold" style={{ width: `${pct}%` }} /></div>
             <form action={progressGoal} className="mt-3 flex items-center justify-between"><input type="hidden" name="id" value={g.id} /><span className="text-sm opacity-70">{g.target ? `${g.progress}/${g.target}` : `${pct}%`}</span><button className="btn !px-4 !py-1 text-sm">{g.target ? "+1" : "Atteint"}</button></form>
           </article>
