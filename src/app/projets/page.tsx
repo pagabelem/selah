@@ -1,4 +1,5 @@
 import DeleteButton from "@/components/DeleteButton";
+import Carousel from "@/components/Carousel";
 import { db, currentUser } from "@/lib/db";
 import { createProject, addTask, toggleTask } from "../actions";
 import { updateProject } from "../actions3";
@@ -16,7 +17,8 @@ export default async function Projets() {
         <textarea name="description" placeholder="Vision du projet" className="input md:col-span-2" />
         <button className="btn md:col-span-2">Créer</button>
       </form>
-      {list.map((p) => {
+      {list.length > 0 && <p className="text-sm opacity-60">{list.length} projet(s) · faites défiler vers la droite →</p>}
+      <Carousel>{list.map((p) => {
         const late = p.plannedEnd && p.plannedEnd < new Date() && p.status !== "TERMINE";
         return (
           <article key={p.id} className="glass p-6">
@@ -24,12 +26,12 @@ export default async function Projets() {
             <p className="text-sm opacity-60">{p.category} · {p.status.replace("_", " ")}</p>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-gold to-yellow-200" style={{ width: `${p.progress}%` }} /></div>
             <details className="mt-3"><summary className="cursor-pointer text-sm text-gold">Modifier</summary>
-              <form action={updateProject} className="mt-3 grid gap-2 md:grid-cols-2"><input type="hidden" name="id" value={p.id} />
+              <form action={updateProject} className="mt-3 grid gap-2"><input type="hidden" name="id" value={p.id} />
                 <input name="name" defaultValue={p.name} className="input" />
                 <select name="status" defaultValue={p.status} className="input">{["IDEE", "PLANIFIE", "EN_COURS", "EN_PAUSE", "TERMINE", "ABANDONNE"].map((x) => <option key={x}>{x}</option>)}</select>
                 <select name="category" defaultValue={p.category} className="input">{["spirituel", "ministère", "professionnel", "académique", "personnel", "famille"].map((c) => <option key={c}>{c}</option>)}</select>
                 <input name="end" type="date" defaultValue={p.plannedEnd?.toISOString().slice(0, 10)} className="input" />
-                <textarea name="description" defaultValue={p.description ?? ""} className="input md:col-span-2" /><button className="btn md:col-span-2">Enregistrer</button></form></details>
+                <textarea name="description" defaultValue={p.description ?? ""} className="input" /><button className="btn">Enregistrer</button></form></details>
             <DeleteButton entity="project" id={p.id} label="Supprimer le projet" />
             <ul className="mt-4 space-y-1">{p.tasks.map((t) => (
               <li key={t.id}><form action={toggleTask}><input type="hidden" name="id" value={t.id} /><button className={t.done ? "line-through opacity-50" : ""}>{t.done ? "✓" : "○"} {t.title}</button></form></li>
@@ -37,7 +39,7 @@ export default async function Projets() {
             <form action={addTask} className="mt-3 flex gap-2"><input type="hidden" name="projectId" value={p.id} /><input name="title" placeholder="Nouvelle tâche" className="input" /><button className="btn">+</button></form>
           </article>
         );
-      })}
+      })}</Carousel>
     </div>
   );
 }

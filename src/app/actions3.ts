@@ -27,6 +27,7 @@ const M: Record<string, (id: string, uid: string) => Promise<unknown>> = {
   meeting: (id, uid) => db.meeting.deleteMany({ where: { id, userId: uid } }),
   fast: (id, uid) => db.fast.deleteMany({ where: { id, userId: uid } }),
   milestone: (id, uid) => db.milestone.deleteMany({ where: { id, userId: uid } }),
+    daytask: (id, uid) => db.dayTask.deleteMany({ where: { id, userId: uid } }),
 };
 export async function remove(fd: FormData) {
   const u = await currentUser(), e = s(fd, "entity"), id = s(fd, "id"), to = s(fd, "to");

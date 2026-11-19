@@ -30,3 +30,15 @@ html.light .glass{background:rgba(255,255,255,.72);border-color:rgba(30,27,75,.1
 html.light .input{background:rgba(255,255,255,.8);border-color:rgba(30,27,75,.2)}
 html.light body::before{opacity:.35}
 @media print{aside,nav,div[aria-hidden],.print\:hidden{display:none!important}body{background:#fff!important;color:#000!important}body::before,body::after{display:none}main{padding:0!important;max-width:none!important}.glass{background:none!important;box-shadow:none!important;border:1px solid #ccc!important;backdrop-filter:none}.gold-text{color:#7a5c00!important;-webkit-text-fill-color:#7a5c00}}
+
+
+
+.carousel > * { flex: 0 0 min(88%, 26rem); scroll-snap-align: start; }
+.carousel::-webkit-scrollbar { height: 6px; }
+.carousel::-webkit-scrollbar-thumb { background: rgba(201, 162, 39, .5); border-radius: 9999px; }
+
+
+select.input { color-scheme: dark; }
+.input option { background-color: #1E1B4B; color: #F7F3E8; }
+html.light select.input { color-scheme: light; }
+html.light .input option { background-color: #fff; color: #1E1B4B; }

@@ -1,4 +1,5 @@
 import DeleteButton from "@/components/DeleteButton";
+import Carousel from "@/components/Carousel";
 import { db, currentUser } from "@/lib/db";
 import { createPromise, fulfillPromise } from "../actions";
 import { updatePromise } from "../actions3";
@@ -13,7 +14,8 @@ export default async function Promesses() {
         <input name="text" required placeholder="Promesse reçue" className="input md:col-span-2" /><input name="verse" placeholder="Verset d'appui" className="input" />
         <button className="btn md:col-span-3">Ajouter</button>
       </form>
-      <div className="grid gap-5 md:grid-cols-2">{list.map((p) => (
+      {list.length > 0 && <p className="text-sm opacity-60">{list.length} promesse(s) · faites défiler vers la droite →</p>}
+      <Carousel>{list.map((p) => (
         <article key={p.id} className={`glass p-6 ${p.status === "ACCOMPLIE" ? "ring-1 ring-gold/60" : ""}`}>
           <p className="verse-glow font-serif text-2xl italic">« {p.text} »</p>
           {p.verse && <p className="mt-2 text-gold">{p.verse}</p>}
@@ -28,7 +30,7 @@ export default async function Promesses() {
             <form action={fulfillPromise} className="mt-4 flex gap-2"><input type="hidden" name="id" value={p.id} /><input name="testimony" placeholder="Témoignage d'accomplissement" className="input" /><button className="btn !px-4 text-sm">Accomplie</button></form>
           ) : <p className="mt-3 text-xs uppercase tracking-widest opacity-50">Accomplie</p>}
         </article>
-      ))}</div>
+      ))}</Carousel>
     </div>
   );
 }

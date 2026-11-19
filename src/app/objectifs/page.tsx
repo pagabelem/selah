@@ -1,4 +1,5 @@
 import DeleteButton from "@/components/DeleteButton";
+import Carousel from "@/components/Carousel";
 import { db, currentUser } from "@/lib/db";
 import { createGoal, progressGoal } from "../actions";
 export const dynamic = "force-dynamic";
@@ -14,7 +15,8 @@ export default async function Objectifs() {
         <select name="domain" className="input">{["spirituel", "famille", "ministère", "académique", "professionnel", "finances", "santé", "relations"].map((x) => <option key={x}>{x}</option>)}</select>
         <input name="target" type="number" placeholder="Cible chiffrée (optionnel)" className="input md:col-span-3" /><button className="btn">Ajouter</button>
       </form>
-      <div className="grid gap-5 md:grid-cols-2">{goals.map((g) => {
+      {goals.length > 0 && <p className="text-sm opacity-60">{goals.length} objectif(s) · faites défiler vers la droite →</p>}
+      <Carousel>{goals.map((g) => {
         const pct = Math.round((g.progress / (g.target ?? 100)) * 100);
         return (
           <article key={g.id} className="glass p-6">
@@ -24,7 +26,7 @@ export default async function Objectifs() {
             <form action={progressGoal} className="mt-3 flex items-center justify-between"><input type="hidden" name="id" value={g.id} /><span className="text-sm opacity-70">{g.target ? `${g.progress}/${g.target}` : `${pct}%`}</span><button className="btn !px-4 !py-1 text-sm">{g.target ? "+1" : "Atteint"}</button></form>
           </article>
         );
-      })}</div>
+      })}</Carousel>
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import { currentUser, db } from "@/lib/db";
 import { SYSTEM } from "@/lib/ai";
+import { buildContext } from "@/lib/context";
 export async function POST(req: Request) {
   const u = await currentUser(), { prompt } = await req.json();
   const r = await fetch("https://api.openai.com/v1/chat/completions", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-    body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-4o-mini", stream: true, messages: [{ role: "system", content: SYSTEM }, { role: "user", content: String(prompt).slice(0, 4000) }] }) });
+    body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-4o-mini", stream: true, messages: [{ role: "system", content: SYSTEM + "\n\n" + (await buildContext(u.id, u.timezone)) }, { role: "user", content: String(prompt).slice(0, 4000) }] }) });
   const enc = new TextEncoder(), dec = new TextDecoder();
   const stream = new ReadableStream({
     async start(c) {
