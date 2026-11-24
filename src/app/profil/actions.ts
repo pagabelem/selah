@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { db, currentUser } from "@/lib/db";
+import { removeObject } from "@/lib/storage";
 export async function updateProfile(fd: FormData) {
   const u = await currentUser(), email = String(fd.get("email")).toLowerCase().trim();
   let ok = email.includes("@");
@@ -19,6 +20,7 @@ export async function deleteAccount(fd: FormData) {
   const u = await currentUser();
   if (String(fd.get("email")).toLowerCase().trim() !== u.email) redirect("/profil?e=del");
   if (u.role === "ADMIN" && (await db.user.count({ where: { role: "ADMIN" } })) < 2) redirect("/profil?e=last");
+  for (const p of [u.avatarPath, u.cvPath]) if (p) await removeObject(p).catch(() => {});
   await db.user.delete({ where: { id: u.id } });
   cookies().delete("selah");
   redirect("/login");

@@ -4,6 +4,7 @@ import webpush from "web-push";
 import { db } from "@/lib/db";
 import { askAI } from "@/lib/ai";
 import { VERSES } from "@/lib/verses";
+import { autoReview, carry, hourIn, todayIn } from "@/lib/planning";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -36,6 +37,9 @@ async function push(userId: string, title: string, body: string, url = "/") {
 }
 
 export async function GET(req: Request) {
+
+
+  
   if (!authorized(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const t0 = Date.now();
   const now = new Date();
@@ -90,6 +94,19 @@ export async function GET(req: Request) {
         // échec ponctuel (IA, réseau) : l'utilisateur sera retenté à la minute suivante
       }
     }
+  }
+
+
+
+    // 3) Bilan du soir à 23 h et report des tâches à minuit, selon le fuseau de chaque utilisateur
+  const utcMin = now.getUTCMinutes();
+  for (const u of await db.user.findMany({ where: { status: "ACTIVE" }, select: { id: true, timezone: true } })) {
+    if (Date.now() - t0 > BUDGET_MS) break;
+    const h = hourIn(u.timezone), today = todayIn(u.timezone);
+    try {
+      if (h === 23 && utcMin < 5) await autoReview(u.id, u.timezone, today); // au plus quelques tentatives
+      if (h === 0) await carry(u.id, today, today);
+    } catch {}
   }
 
   return NextResponse.json({ ok: true, reminders, words, ms: Date.now() - t0 });

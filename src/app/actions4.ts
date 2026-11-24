@@ -1,7 +1,7 @@
 "use server";
 import { db, currentUser } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { D, shift, carry } from "@/lib/planning";
+import { D, shift, carry, autoReview } from "@/lib/planning";
 const s = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
 export async function addDayTasks(fd: FormData) {
   const u = await currentUser(), date = s(fd, "date");
@@ -23,5 +23,13 @@ export async function closeDay(fd: FormData) {
 export async function saveReview(fd: FormData) {
   const u = await currentUser(), date = D(s(fd, "date")), data = { gratitude: s(fd, "gratitude"), eveningReview: s(fd, "review") };
   await db.dailyPlan.upsert({ where: { userId_date: { userId: u.id, date } }, update: data, create: { userId: u.id, date, ...data } });
+  revalidatePath("/planning");
+}
+
+
+
+export async function generateReview(fd: FormData) {
+  const u = await currentUser();
+  await autoReview(u.id, u.timezone, s(fd, "date"), true);
   revalidatePath("/planning");
 }

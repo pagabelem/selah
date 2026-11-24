@@ -4,7 +4,7 @@ import DeleteButton from "@/components/DeleteButton";
 export const dynamic = "force-dynamic";
 const badge = { ACTIVE: "bg-emerald-500/20 text-emerald-300", PENDING: "bg-amber-500/20 text-amber-300", BLOCKED: "bg-red-500/20 text-red-300" } as const;
 const Op = ({ id, op, label }: { id: string; op: string; label: string }) => (
-  <form action={adminUser}><input type="hidden" name="id" value={id} /><input type="hidden" name="op" value={op} /><button className="text-gold">{label}</button></form>
+  <form data-toast="Fait ✓" action={adminUser}><input type="hidden" name="id" value={id} /><input type="hidden" name="op" value={op} /><button className="text-gold">{label}</button></form>
 );
 export default async function Admin({ searchParams }: { searchParams: { q?: string; s?: string } }) {
   const me = await requireAdmin(), q = searchParams.q?.trim(), s = searchParams.s, day = 864e5;
@@ -47,7 +47,7 @@ export default async function Admin({ searchParams }: { searchParams: { q?: stri
               {u.status !== "ACTIVE" && <Op id={u.id} op="activate" label="Activer" />}
               {u.status !== "BLOCKED" && <Op id={u.id} op="block" label="Bloquer" />}
               {u.role === "USER" ? <Op id={u.id} op="admin" label="Promouvoir admin" /> : <Op id={u.id} op="user" label="Rétrograder" />}
-              <form action={adminPassword} className="flex gap-2"><input type="hidden" name="id" value={u.id} /><input name="password" type="password" minLength={8} required placeholder="Nouveau mot de passe" className="input !py-1 text-sm" /><button className="text-gold">Définir</button></form>
+              <form data-toast="Mot de passe défini ✓" action={adminPassword} className="flex gap-2"><input type="hidden" name="id" value={u.id} /><input name="password" type="password" minLength={8} required placeholder="Nouveau mot de passe" className="input !py-1 text-sm" /><button className="text-gold">Définir</button></form>
               <DeleteButton action={adminUser} id={u.id} op="delete" label="Supprimer le compte" />
             </div>
           )}
